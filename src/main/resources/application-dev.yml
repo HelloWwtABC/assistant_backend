@@ -9,3 +9,25 @@ spring:
 server:
   port: 80
 
+jwt:
+  # Development only. Replace before production use.
+  secret: assistant-dev-secret-key-please-change-123456
+  issuer: assistant
+  expire-seconds: 86400
+  refresh-threshold-seconds: 1800
+  whitelist:
+    - /api/auth/login
+    - /error
+
+minio:
+  # MinIO 服务地址 (API 端口 9000)
+  endpoint: http://192.168.74.132:9000
+  # 账号
+  access-key: admin
+  # 密码
+  secret-key: 123456789
+  # 桶名称（你自己创建的 bucket 名字）
+  bucket-name: document-base
+  # 上传文件大小
+  file-size: 100MB
+

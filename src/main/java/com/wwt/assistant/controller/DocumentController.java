@@ -7,6 +7,8 @@ import com.wwt.assistant.dto.document.request.UpdateDocumentRequest;
 import com.wwt.assistant.dto.document.request.UploadDocumentRequest;
 import com.wwt.assistant.dto.document.response.DocumentDetailResponse;
 import com.wwt.assistant.dto.document.response.DocumentPageResponse;
+import com.wwt.assistant.service.DocumentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,12 +21,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/documents")
 public class DocumentController {
 
+    private final DocumentService documentService;
+
     @GetMapping
     public ApiResponse<DocumentPageResponse> getDocuments(@ModelAttribute DocumentQuery query) {
-        return unsupported("list documents");
+        return documentService.getDocuments(query);
     }
 
     @GetMapping("/{documentId}")
@@ -34,7 +39,7 @@ public class DocumentController {
 
     @PostMapping({"", "/upload"})
     public ApiResponse<DocumentDetailResponse> createDocument(@ModelAttribute UploadDocumentRequest request) {
-        return unsupported("create document");
+        return documentService.createDocument(request);
     }
 
     @PutMapping("/{documentId}")

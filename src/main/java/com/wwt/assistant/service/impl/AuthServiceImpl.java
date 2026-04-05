@@ -7,19 +7,12 @@ import com.wwt.assistant.dto.auth.response.LoginResponse;
 import com.wwt.assistant.entity.SysUser;
 import com.wwt.assistant.mapper.SysUserMapper;
 import com.wwt.assistant.service.AuthService;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import com.wwt.assistant.utils.JWTUtil;
 import java.time.LocalDateTime;
-import java.util.HexFormat;
-import java.util.Locale;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -29,6 +22,7 @@ public class AuthServiceImpl implements AuthService {
     private static final String STATUS_ACTIVE = "active";
 
     private final SysUserMapper sysUserMapper;
+    private final JWTUtil jwtUtil;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -38,7 +32,8 @@ public class AuthServiceImpl implements AuthService {
             return ApiResponse.fail(400, "用户名或密码不能为空");
         }
 
-        SysUser user = sysUserMapper.findActiveByUsername(request.getUsername().trim());
+        String username = request.getUsername().trim();
+        SysUser user = sysUserMapper.findActiveByUsername(username);
         if (user == null || !matchesPassword(request.getPassword(), user.getPasswordHash())) {
             return ApiResponse.fail(401, "用户名或密码错误");
         }
@@ -50,72 +45,30 @@ public class AuthServiceImpl implements AuthService {
         LocalDateTime loginTime = LocalDateTime.now();
         sysUserMapper.updateLoginSuccess(user.getId(), loginTime);
 
+        String token = jwtUtil.generateToken(user.getId(), user.getUsername(), user.getTeamId());
         LoginResponse response = new LoginResponse();
-        response.setToken(generateToken());
-        response.setRefreshToken(generateToken());
-
-        CurrentUserResponse currentUser = new CurrentUserResponse();
-        BeanUtils.copyProperties(user, currentUser);
-        response.setUser(currentUser);
+        response.setToken(token);
+        response.setRefreshToken(token);
+        response.setUser(buildCurrentUser(user));
 
         return ApiResponse.success(response);
     }
 
-
-    private String generateToken() {
-        return UUID.randomUUID().toString().replace("-", "");
+    private CurrentUserResponse buildCurrentUser(SysUser user) {
+        CurrentUserResponse currentUser = new CurrentUserResponse();
+        currentUser.setId(user.getId() == null ? null : String.valueOf(user.getId()));
+        currentUser.setName(user.getName());
+        currentUser.setEmail(user.getEmail());
+        currentUser.setRole(user.getRole());
+        return currentUser;
     }
 
     private boolean matchesPassword(String rawPassword, String storedPasswordHash) {
         if (!StringUtils.hasText(storedPasswordHash)) {
             return false;
         }
-
         String normalizedHash = storedPasswordHash.trim();
-        if (normalizedHash.startsWith("{noop}")) {
-            return rawPassword.equals(normalizedHash.substring("{noop}".length()));
-        }
-        if (normalizedHash.startsWith("{bcrypt}")) {
-            return passwordEncoder.matches(rawPassword, normalizedHash.substring("{bcrypt}".length()));
-        }
-        if (isBcryptHash(normalizedHash)) {
-            return passwordEncoder.matches(rawPassword, normalizedHash);
-        }
-        if (isHexHash(normalizedHash, 64)) {
-            return sha256Hex(rawPassword).equalsIgnoreCase(normalizedHash);
-        }
-        if (isHexHash(normalizedHash, 32)) {
-            return DigestUtils.md5DigestAsHex(rawPassword.getBytes(StandardCharsets.UTF_8))
-                    .equalsIgnoreCase(normalizedHash);
-        }
-        return rawPassword.equals(normalizedHash);
+        return passwordEncoder.matches(rawPassword, normalizedHash);
     }
 
-    private boolean isBcryptHash(String value) {
-        return value.startsWith("$2a$") || value.startsWith("$2b$") || value.startsWith("$2y$");
-    }
-
-    private boolean isHexHash(String value, int expectedLength) {
-        if (value.length() != expectedLength) {
-            return false;
-        }
-        String lower = value.toLowerCase(Locale.ROOT);
-        for (int i = 0; i < lower.length(); i++) {
-            char current = lower.charAt(i);
-            if (!((current >= '0' && current <= '9') || (current >= 'a' && current <= 'f'))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private String sha256Hex(String value) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(value.getBytes(StandardCharsets.UTF_8));
-            return HexFormat.of().formatHex(hash);
-        } catch (NoSuchAlgorithmException ex) {
-            throw new IllegalStateException("SHA-256 algorithm is unavailable", ex);
-        }
-    }
 }
