@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wwt.assistant.mapper.DocumentChunkMapper">
+
+    <insert id="batchInsert">
+        INSERT INTO kb_document_chunk (
+            id,
+            document_id,
+            knowledge_base_id,
+            chunk_index,
+            content,
+            summary,
+            token_count,
+            vector_status,
+            embedding_ref,
+            page_no,
+            section_title,
+            char_count,
+            created_at,
+            updated_at,
+            deleted_at,
+            deleted_by
+        )
+        VALUES
+        <foreach collection="chunks" item="chunk" separator=",">
+            (
+                #{chunk.id},
+                #{chunk.documentId},
+                #{chunk.knowledgeBaseId},
+                #{chunk.chunkIndex},
+                #{chunk.content},
+                #{chunk.summary},
+                #{chunk.tokenCount},
+                #{chunk.vectorStatus},
+                #{chunk.embeddingRef},
+                #{chunk.pageNo},
+                #{chunk.sectionTitle},
+                #{chunk.charCount},
+                #{chunk.createdAt},
+                #{chunk.updatedAt},
+                #{chunk.deletedAt},
+                #{chunk.deletedBy}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

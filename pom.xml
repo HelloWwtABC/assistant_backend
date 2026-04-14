@@ -14,14 +14,25 @@
     </parent>
 
     <properties>
-        <!-- 全局 JDK 21 编译配置 -->
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-ai.version>1.0.0-M4</spring-ai.version>
+        <langchain4j.version>1.13.0</langchain4j.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-bom</artifactId>
+                <version>${langchain4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -40,7 +51,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- 3. MyBatis-Plus （操作数据库最常用） -->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
@@ -59,27 +69,23 @@
             <version>3.5.10</version>
         </dependency>
 
-        <!-- 4. 数据库连接池（默认自带，但写上更稳） -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
         </dependency>
 
-        <!-- 5. lombok 自动生成 getter/setter/构造器（必装） -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
-        <!-- 6. 测试依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
 
-        <!-- JWT 核心（Spring Boot 3 专用） -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -100,7 +106,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- MinIO 客户端 -->
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
@@ -119,20 +124,26 @@
             <version>2.9.2</version>
         </dependency>
 
-        <!-- Volcengine Ark runtime SDK, used for embeddings and model calls. -->
         <dependency>
             <groupId>com.volcengine</groupId>
             <artifactId>volcengine-java-sdk-ark-runtime</artifactId>
             <version>1.0.18</version>
         </dependency>
 
-        <!-- Qdrant official Java client, used for vector collection and point writes. -->
         <dependency>
             <groupId>io.qdrant</groupId>
             <artifactId>client</artifactId>
             <version>1.17.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-ollama</artifactId>
+        </dependency>
     </dependencies>
 </project>

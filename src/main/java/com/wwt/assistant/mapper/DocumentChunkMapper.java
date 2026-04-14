@@ -72,6 +72,7 @@ public interface DocumentChunkMapper extends BaseMapper<KbDocumentChunk> {
             SELECT
                 c.id AS chunkId,
                 c.document_id AS documentId,
+                c.knowledge_base_id AS knowledgeBaseId,
                 d.name AS documentName,
                 c.chunk_index AS chunkIndex,
                 c.content AS content,
@@ -100,6 +101,7 @@ public interface DocumentChunkMapper extends BaseMapper<KbDocumentChunk> {
     class QaChunkRecord {
         private Long chunkId;
         private Long documentId;
+        private Long knowledgeBaseId;
         private String documentName;
         private Integer chunkIndex;
         private String content;
@@ -121,6 +123,14 @@ public interface DocumentChunkMapper extends BaseMapper<KbDocumentChunk> {
 
         public void setDocumentId(Long documentId) {
             this.documentId = documentId;
+        }
+
+        public Long getKnowledgeBaseId() {
+            return knowledgeBaseId;
+        }
+
+        public void setKnowledgeBaseId(Long knowledgeBaseId) {
+            this.knowledgeBaseId = knowledgeBaseId;
         }
 
         public String getDocumentName() {

@@ -56,3 +56,8 @@ ollama:
   temperature: 0.6
   num-ctx: 4096
   stream: false
+
+agent:
+  langchain4j:
+    startup-check-enabled: true
+    startup-check-prompt: Reply with OK only.
