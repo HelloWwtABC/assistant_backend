@@ -6,7 +6,9 @@ import com.wwt.assistant.dto.qa.request.QaChatRequest;
 import com.wwt.assistant.dto.qa.response.QaChatResponse;
 import com.wwt.assistant.dto.qa.response.QaSessionDetailResponse;
 import com.wwt.assistant.dto.qa.response.QaSessionItem;
+import com.wwt.assistant.service.QaService;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,32 +18,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/qa")
 public class QaController {
 
+    private final QaService qaService;
+
     @GetMapping("/sessions")
     public ApiResponse<List<QaSessionItem>> getSessions() {
-        return unsupported("list qa sessions");
+        return qaService.getSessions();
     }
 
     @GetMapping("/sessions/{sessionId}")
     public ApiResponse<QaSessionDetailResponse> getSessionDetail(@PathVariable String sessionId) {
-        return unsupported("get qa session detail");
+        return qaService.getSessionDetail(sessionId);
     }
 
     @PostMapping("/sessions")
     public ApiResponse<QaSessionDetailResponse> createSession() {
-        return unsupported("create qa session");
+        return qaService.createSession();
     }
 
     @DeleteMapping("/sessions/{sessionId}")
     public ApiResponse<Void> deleteSession(@PathVariable String sessionId) {
-        return unsupported("delete qa session");
+        return qaService.deleteSession(sessionId);
     }
 
     @PostMapping("/chat")
     public ApiResponse<QaChatResponse> chat(@RequestBody QaChatRequest request) {
-        return unsupported("qa chat");
+        return qaService.chat(request);
     }
 
     @PostMapping("/clear-context")

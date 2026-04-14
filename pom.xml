@@ -19,7 +19,9 @@
         <maven.compiler.target>21</maven.compiler.target>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-ai.version>1.0.0-M4</spring-ai.version>
     </properties>
+
 
     <dependencies>
         <dependency>
@@ -103,6 +105,32 @@
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>8.5.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-parsers-standard-package</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+        <!-- Volcengine Ark runtime SDK, used for embeddings and model calls. -->
+        <dependency>
+            <groupId>com.volcengine</groupId>
+            <artifactId>volcengine-java-sdk-ark-runtime</artifactId>
+            <version>1.0.18</version>
+        </dependency>
+
+        <!-- Qdrant official Java client, used for vector collection and point writes. -->
+        <dependency>
+            <groupId>io.qdrant</groupId>
+            <artifactId>client</artifactId>
+            <version>1.17.0</version>
         </dependency>
 
 

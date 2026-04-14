@@ -34,7 +34,7 @@ public class DocumentController {
 
     @GetMapping("/{documentId}")
     public ApiResponse<DocumentDetailResponse> getDocument(@PathVariable String documentId) {
-        return unsupported("get document detail");
+        return documentService.getDocument(documentId);
     }
 
     @PostMapping({"", "/upload"})
@@ -51,12 +51,12 @@ public class DocumentController {
 
     @DeleteMapping("/{documentId}")
     public ApiResponse<Void> deleteDocument(@PathVariable String documentId) {
-        return unsupported("delete document");
+        return documentService.deleteDocument(documentId);
     }
 
     @RequestMapping(value = {"/batch", "/batch-delete"}, method = {RequestMethod.DELETE, RequestMethod.POST})
     public ApiResponse<Void> batchDeleteDocuments(@RequestBody BatchDeleteDocumentsRequest request) {
-        return unsupported("batch delete documents");
+        return documentService.batchDeleteDocuments(request);
     }
 
     private <T> T unsupported(String operation) {

@@ -61,4 +61,22 @@ public class KbDocumentChunk extends BaseEntity {
      */
     @TableField("embedding_ref")
     private String embeddingRef;
+
+    /**
+     * 页码
+     */
+    @TableField("page_no")
+    private Integer pageNo;
+
+    /**
+     * 章节标题
+     */
+    @TableField("section_title")
+    private String sectionTitle;
+
+    /**
+     * 字符数
+     */
+    @TableField("char_count")
+    private Integer charCount;
 }
